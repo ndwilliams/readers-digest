@@ -1,12 +1,20 @@
 from rest_framework import viewsets, status
 from rest_framework import serializers
 from rest_framework.response import Response
-from digestapi.models import Category
+from digestapi.models import Category, Book
+
+class CategoryBookSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Book
+        fields = ['id', 'title', 'author']
 
 class CategorySerializer(serializers.ModelSerializer):
+
+    books = CategoryBookSerializer(many=True)
+
     class Meta:
         model = Category
-        fields = ['id', 'name']
+        fields = ['id', 'name', 'books']
 
 
 class CategoryViewSet(viewsets.ViewSet):
