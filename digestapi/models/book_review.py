@@ -7,4 +7,6 @@ class BookReview(models.Model):
     book = models.ForeignKey("Book", on_delete=models.CASCADE, related_name="reviews_created")
     rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)], null=True, blank=True)
     comment = models.CharField(max_length=300)
+    date = models.DateTimeField(auto_now_add=True)
+    
                              

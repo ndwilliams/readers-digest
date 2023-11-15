@@ -1,26 +1,60 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework import serializers
-from digestapi.models import Book
-from .categories import CategorySerializer
+from digestapi.models import Book, Category, BookReview
+from django.contrib.auth.models import User
+
+class BookCategoriesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ['id', 'name']
+
+class BookReviewsNamesSerializer(serializers.ModelSerializer):        
+    user_name = serializers.SerializerMethodField()
+
+    def get_user_name(self, obj):
+        return f'{obj.first_name} {obj.last_name}'
+    
+    class Meta:
+        model = User
+        fields = ['user_name']
+    
+class BookReviewsSerializer(serializers.ModelSerializer):
+
+    user = BookReviewsNamesSerializer(many=False)
+    
+    class Meta:
+        model = BookReview
+        fields = ['id', 'user', 'rating', 'comment']
 
 class BookSerializer(serializers.ModelSerializer):
-    is_owner = serializers.SerializerMethodField()
-    categories = CategorySerializer(many=True)
+    # Override default serialization to replace foreign keys
+    # with expanded related resource. By default, this would
+    # be a list of integers (e.g. [2,4,9])
+    categories = BookCategoriesSerializer(many=True)
+    reviews_created = BookReviewsSerializer(many=True)
 
+    # Declare that an ad-hoc property should be included in JSON
+    is_owner = serializers.SerializerMethodField()
+
+    # Function containing instructions for ad-hoc property
     def get_is_owner(self, obj):
         # Check if the authenticated user is the owner
         return self.context['request'].user == obj.user
     
     class Meta:
         model = Book
-        fields = ['id', 'title', 'author', 'isbn_number', 'cover_image', 'is_owner', 'categories']
+        fields = ['id', 'title', 'author', 'isbn_number', 'cover_image', 'is_owner', 'categories', 'reviews_created']
 
 class BookViewSet(viewsets.ViewSet):
 
     def list(self, request):
         books = Book.objects.all()
-        serializer = BookSerializer(books, many=True, context={'request': request})
+        serializer = BookSerializer(
+            books,
+            many=True,
+            context={'request': request} # Allow serializer to access request
+        )
         return Response(serializer.data)
     
     def retrieve(self, request, pk=None):

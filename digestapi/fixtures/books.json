@@ -1,0 +1,62 @@
+[
+  {
+    "model": "digestapi.book",
+    "pk": 1,
+    "fields": {
+      "user": 2,
+      "title": "The Neverending Story",
+      "author": "Edwin R. Billows",
+      "isbn_number": "8573282904",
+      "cover_image": "http://www.allbooks.com/neverendingstory/images/cover.png",
+      "categories": [3, 5]
+    }
+  },
+  {
+    "model": "digestapi.book",
+    "pk": 2,
+    "fields": {
+      "user": 3,
+      "title": "The Great Gatsby",
+      "author": "F. Scott Fitzgerald",
+      "isbn_number": "9780743273565",
+      "cover_image": "https://example.com/great-gatsby-cover.jpg",
+      "categories": [3, 4]
+    }
+  },
+  {
+    "model": "digestapi.book",
+    "pk": 3,
+    "fields": {
+      "user": 1,
+      "title": "To Kill a Mockingbird",
+      "author": "Harper Lee",
+      "isbn_number": "9780061120084",
+      "cover_image": "https://example.com/to-kill-a-mockingbird-cover.jpg",
+      "categories": [3]
+    }
+  },
+  {
+    "model": "digestapi.book",
+    "pk": 4,
+    "fields": {
+      "user": 4,
+      "title": "Sapiens: A Brief History of Humankind",
+      "author": "Yuval Noah Harari",
+      "isbn_number": "9780062316097",
+      "cover_image": "https://example.com/sapiens-cover.jpg",
+      "categories": [2, 4]
+    }
+  },
+  {
+    "model": "digestapi.book",
+    "pk": 5,
+    "fields": {
+      "user": 4,
+      "title": "The Hitchhiker's Guide to the Galaxy",
+      "author": "Douglas Adams",
+      "isbn_number": "9780345391803",
+      "cover_image": "https://example.com/hitchhikers-guide-cover.jpg",
+      "categories": [1, 5]
+    }
+  }
+]
