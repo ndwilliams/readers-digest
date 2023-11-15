@@ -1,14 +1,38 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework import serializers
-from digestapi.models import Book
-from .categories import CategorySerializer
+from digestapi.models import Book, Category, BookReview
+from django.contrib.auth.models import User
+
+class BookCategoriesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ['id', 'name']
+
+class BookReviewsNamesSerializer(serializers.ModelSerializer):        
+    user_name = serializers.SerializerMethodField()
+
+    def get_user_name(self, obj):
+        return f'{obj.first_name} {obj.last_name}'
+    
+    class Meta:
+        model = User
+        fields = ['user_name']
+    
+class BookReviewsSerializer(serializers.ModelSerializer):
+
+    user = BookReviewsNamesSerializer(many=False)
+    
+    class Meta:
+        model = BookReview
+        fields = ['id', 'user', 'rating', 'comment']
 
 class BookSerializer(serializers.ModelSerializer):
     # Override default serialization to replace foreign keys
     # with expanded related resource. By default, this would
     # be a list of integers (e.g. [2,4,9])
-    categories = CategorySerializer(many=True)
+    categories = BookCategoriesSerializer(many=True)
+    reviews_created = BookReviewsSerializer(many=True)
 
     # Declare that an ad-hoc property should be included in JSON
     is_owner = serializers.SerializerMethodField()
@@ -20,7 +44,7 @@ class BookSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Book
-        fields = ['id', 'title', 'author', 'isbn_number', 'cover_image', 'is_owner', 'categories']
+        fields = ['id', 'title', 'author', 'isbn_number', 'cover_image', 'is_owner', 'categories', 'reviews_created']
 
 class BookViewSet(viewsets.ViewSet):
 
