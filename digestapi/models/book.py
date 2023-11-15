@@ -11,4 +11,4 @@ class Book(models.Model):
         "Category",
         through='BookCategory',
         related_name="books"
-    )    
+    )
